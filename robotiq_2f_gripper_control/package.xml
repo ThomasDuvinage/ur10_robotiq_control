@@ -12,7 +12,6 @@
 
   <depend>rospy</depend>
   <depend>roscpp</depend>
-  <depend>robotiq_ethercat</depend>
 
   <build_depend>message_generation</build_depend>
 

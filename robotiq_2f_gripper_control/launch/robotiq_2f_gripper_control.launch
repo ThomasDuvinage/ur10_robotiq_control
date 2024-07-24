@@ -1,0 +1,9 @@
+<launch>
+  <arg name="robot_ip" default="192.168.1.3" />
+  <arg name="port" default="63352" />
+
+  <node pkg="robotiq_2f_gripper_control" type="controller.py" name="gripper_controller" output="screen">
+      <param name="robot_ip" type="str" value="$(arg robot_ip)" />
+      <param name="activate" type="string" value="$(arg port)" />
+    </node>
+</launch>

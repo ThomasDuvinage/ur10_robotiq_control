@@ -1,0 +1,7 @@
+<launch>
+    <arg name="visualization" default="True"/>
+
+  <node pkg="ur10_gripper_control" type="ur10_control_example" name="ur10_control_example" output="screen">
+
+  </node>
+</launch>

@@ -40,7 +40,7 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Tree of links and joints
-        robotiq_arg2f_base_link:
+        base:
           Details:
             Alpha: 1
             Show Axes: false
@@ -180,7 +180,7 @@ Visualization Manager:
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: robotiq_arg2f_base_link
+    Fixed Frame: base
     Frame Rate: 30
   Name: root
   Tools:
