@@ -1,0 +1,6 @@
+<launch>
+
+  <node pkg="ur10_gripper_control" type="real_robot_control" name="real_robot_control" output="screen">
+
+  </node>
+</launch>
