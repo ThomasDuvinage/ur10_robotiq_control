@@ -15,7 +15,6 @@ imgpoints = [] # 2d points in image plane.
 
 
 objp = objp*15
-print(objp)
 
 images = glob.glob(r'./images/*.jpg')
 
