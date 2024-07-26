@@ -16,6 +16,9 @@ def move_robot_client():
         
         # Create an instance of the Pose message
         pose = Pose()
+        # Edit pose here : 
+        # pose.position.x = ...
+        # pose.orientation.x = ... 
         
         # Create a request to the service
         response = move_robot(pose)
