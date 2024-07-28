@@ -1,4 +1,7 @@
 #include "cartesian_control_msgs/CartesianTrajectoryPoint.h"
+#include "ros/duration.h"
+#include "ros/init.h"
+#include "ros/node_handle.h"
 #include "ros/service_client.h"
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
@@ -19,20 +22,22 @@
 #include <controller_manager_msgs/SwitchControllerRequest.h>
 #include <controller_manager_msgs/SwitchController.h>
 
+#include <ur10_gripper_control/MoveRobot.h>
+
 typedef actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> TrajectoryClient;
 typedef actionlib::SimpleActionClient<cartesian_control_msgs::FollowCartesianTrajectoryAction> CartesianTrajectoryClient;
 
 class TrajectorySender {
 public:
     TrajectorySender() : nh_("~"),joint_trajectory_client_("/scaled_pos_joint_traj_controller/follow_joint_trajectory", true), joint_trajectory_controller_("my_controller"), cartesian_trajectory_client_("/pose_based_cartesian_traj_controller/follow_cartesian_trajectory", true) {
-        if (!cartesian_trajectory_client_.waitForServer(ros::Duration(5.0))) {
-            ROS_ERROR("Could not connect to action server");
-            ros::shutdown();
-        }
+        // if (!cartesian_trajectory_client_.waitForServer(ros::Duration(5.0))) {
+        //     ROS_ERROR("Could not connect to action server");
+        //     ros::shutdown();
+        // }
 
-        switch_srv = nh_.serviceClient<controller_manager_msgs::SwitchController>("controller_manager/switch_controller");
-        load_srv = nh_.serviceClient<controller_manager_msgs::LoadController>("controller_manager/load_controller");
-        list_srv = nh_.serviceClient<controller_manager_msgs::ListControllers>("controller_manager/list_controllers");
+        switch_srv = nh_.serviceClient<controller_manager_msgs::SwitchController>("/controller_manager/switch_controller");
+        load_srv = nh_.serviceClient<controller_manager_msgs::LoadController>("/controller_manager/load_controller");
+        list_srv = nh_.serviceClient<controller_manager_msgs::ListControllers>("/controller_manager/list_controllers");
 
         joint_trajectory_controller_ = joint_trajectory_controllers[0];
         cartesian_trajectory_controller_ = cartesian_trajectory_controllers[0];
@@ -89,6 +94,8 @@ public:
             ROS_ERROR("Failed to call service switch_controller");
         }
 
+        ROS_INFO("Controllers have been switched");
+
     }
 
     void sendJointTrajectory() {
@@ -139,20 +146,42 @@ public:
     void sendCartesianTrajectory() {
         swtich_controller(cartesian_trajectory_controller_);
 
+        if (!cartesian_trajectory_client_.waitForServer(ros::Duration(5.0))) {
+            ROS_ERROR("Could not connect to action server");
+            ros::shutdown();
+        }
+        else {
+            ROS_INFO("Connected to action server");
+        }
+
         // Create and fill trajectory goal
         cartesian_control_msgs::FollowCartesianTrajectoryGoal goal;
 
-        std::vector<geometry_msgs::Pose> pose_list = {
-            createPose(0.4, -0.1, 0.4)
-        };
+        std::vector<geometry_msgs::Pose> pose_list;
 
-        // ,
-        //     createPose(0.4, -0.1, 0.6),
-        //     createPose(0.4, 0.3, 0.6),
-        //     createPose(0.4, 0.3, 0.4),
-        //     createPose(0.4, -0.1, 0.4)
+        // Define the poses
+        geometry_msgs::Pose pose1;
+        pose1.position.x = 0.652;
+        pose1.position.y = 0.680;
+        pose1.position.z = -0.038;
+        pose1.orientation.x = 0.9950818;
+        pose1.orientation.y = 0.0934934;
+        pose1.orientation.z = 0;
+        pose1.orientation.w = -0.032729;
+        pose_list.push_back(pose1);
 
-        std::vector<double> duration_list = {5.0}; // , 4.0, 5.0, 6.0, 7.0
+        geometry_msgs::Pose pose2;
+        pose2.position.x = 0.652;
+        pose2.position.y = 0.680;
+        pose2.position.z = -0.076;
+        pose2.orientation.x = 0.9950818;
+        pose2.orientation.y = 0.0934934;
+        pose2.orientation.z = 0;
+        pose2.orientation.w = -0.032729;
+        pose_list.push_back(pose2);
+
+        // Here the time is refered to time 0 so (t1 = t0 + task_duration)
+        std::vector<double> duration_list = {0.5, 1}; 
 
         for (size_t i = 0; i < pose_list.size(); ++i) {
             cartesian_control_msgs::CartesianTrajectoryPoint point;
@@ -213,13 +242,43 @@ private:
         return pose;
     }
 
+        // Add two numbers and output the sum
+    bool move(ur10_gripper_control::MoveRobot::Request  &req, ur10_gripper_control::MoveRobot::Response &res) {
+        // Move the robot 
+        // ........
+
+        ROS_INFO("Moving the robot.....");
+
+        res.result = true;
+        
+        return true;
+    }
+
 };
+
+bool move(ur10_gripper_control::MoveRobot::Request  &req, ur10_gripper_control::MoveRobot::Response &res) {
+    // Move the robot 
+    // ........
+
+    ROS_INFO("Moving the robot.....");
+
+    res.result = true;
+    
+    return true;
+}
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "trajectory_sender");
 
+    ros::NodeHandle nh;
+
+    ros::ServiceServer service = nh.advertiseService("/ur10_gripper_controller/MoveRobot", move);
+
+
     TrajectorySender sender;
     sender.sendCartesianTrajectory();
+
+    ros::spin();
 
     return 0;
 }

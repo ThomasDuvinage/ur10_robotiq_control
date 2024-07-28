@@ -29,8 +29,13 @@ Real robot :
 
 ```
 roslaunch ur_robot_driver ur10_bringup.launch robot_ip:=192.168.1.3 kinematics_config:=${HOME}/AIST_UR10_robot_calibration.yaml
+```
 
 ```
+rosrun ur10_gripper_control real_robot_control
+```
+
+
 
 ## Test the gripper 
 
@@ -69,3 +74,22 @@ rosrun ur10_gripper_control ur10_control_service_client_example
 Edit `scripts/rosservice_client_example.py` if using python or `src/rosservice_client_example.cpp` 
 
 You need to call your pose generator within the node. 
+
+
+or
+
+```
+
+rosservice call /ur10_gripper_controller/MoveRobot "Pose:
+  position:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  orientation:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 0.0" 
+result: True
+
+```
