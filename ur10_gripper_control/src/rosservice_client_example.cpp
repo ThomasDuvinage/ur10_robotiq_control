@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     geometry_msgs::Pose pose;
     
     // Fill in the two values that will be sent to the Service Server
-    srv.request.Pose = pose;
+    srv.request.poses = {pose};
     
     // Call the service, and send the data
     if (client.call(srv))

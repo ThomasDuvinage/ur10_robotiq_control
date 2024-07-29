@@ -51,6 +51,6 @@ target_link_libraries(ur10_control_service_client_example ${catkin_LIBRARIES})
 add_executable(jsonparser src/json_parser.cpp)
 
 
-catkin_install_python(PROGRAMS scripts/rosservice_client_example.py
+catkin_install_python(PROGRAMS scripts/rosservice_client_example.py scripts/ros_socket_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
