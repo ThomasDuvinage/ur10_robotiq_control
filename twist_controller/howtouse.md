@@ -15,16 +15,14 @@ Create a launch file to start the controller and configure the parameters. This 
 
 ```xml
 <launch>
-  <node name="twist_controller_node" pkg="your_package" type="twist_controller_node" output="screen">
+  <node name="twist_controller_node" pkg="twist_controller" type="twist_controller_node" output="screen">
     <param name="frame_id" value="base_link"/>
     <param name="twist_gain" value="0.1"/>
     <param name="joints" value="[joint1, joint2, joint3]"/>
-    <rosparam file="$(find your_package)/config/twist_controller.yaml" command="load"/>
+    <rosparam file="$(find twist_controller)/config/twist_controller.yaml" command="load"/>
   </node>
 </launch>
 ```
-
-Make sure to replace "your_package" with the name of your package and adjust the parameters as needed.
 
 Add Controller to controller_manager:
 The TwistController must be loaded and managed by the controller_manager. Add the controller to your controller_manager configuration. You can include it in a YAML file for controller_manager or load it dynamically. Here is an example of adding it to a controller_manager YAML file:
