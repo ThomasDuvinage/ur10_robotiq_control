@@ -1,0 +1,8 @@
+string control_mode
+geometry_msgs/Pose[] poses
+std_msgs/Int16[] gripper
+sensor_msgs/JointState[] jointStates
+float32[] time_actions
+geometry_msgs/Twist cmd_vel
+---
+bool result

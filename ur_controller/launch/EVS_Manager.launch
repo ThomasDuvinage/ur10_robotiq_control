@@ -1,0 +1,11 @@
+<launch>
+    <arg name="method" default="method1" />
+    <arg name="tasks_file" default="$(find ur_controller)/etc/tasks.yaml" />
+
+    <rosparam file="$(find ur_controller)/config/visual_servoing_launch_info.yaml" />
+
+    <node pkg="ur_controller" type="EVS_Manager" name="EVS_Manager" output="screen">
+      <param name="method" type="string" value="$(arg method)" />
+      <param name="tasks_file" type="string" value="$(arg tasks_file)" />
+    </node>
+</launch>

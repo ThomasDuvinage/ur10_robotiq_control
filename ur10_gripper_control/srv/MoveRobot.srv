@@ -1,4 +1,0 @@
-geometry_msgs/Pose[] poses
-bool[] gripper
----
-bool result

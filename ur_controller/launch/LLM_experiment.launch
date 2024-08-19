@@ -1,0 +1,23 @@
+<launch>
+    <arg name="server_ip" default="192.168.244.164"/>
+    <arg name="server_port" default="65500" />
+
+
+    <!-- Include the UR10 bringup launch file -->
+    <include file="$(find ur_robot_driver)/launch/ur10_bringup.launch">
+        <!-- Define arguments for the UR10 bringup -->
+        <arg name="robot_ip" value="192.168.1.3"/>
+        <arg name="kinematics_config" value="$(env HOME)/ur10.yaml"/>
+    </include>
+
+    <!-- Include the Robotiq 2F gripper control launch file -->
+    <include file="$(find robotiq_2f_gripper_control)/launch/robotiq_2f_gripper_control.launch" />
+
+    <!-- Include the robot control launch file -->
+    <include file="$(find ur_controller)/launch/TrajectoryController.launch" />
+
+    <node pkg="ur_controller" type="ros_socket_server.py" name="ros_socket_server" output="screen">
+      <param name="server_ip" type="string" value="$(arg server_ip)" />
+      <param name="server_port" type="string" value="$(arg server_port)" />
+    </node>
+</launch>

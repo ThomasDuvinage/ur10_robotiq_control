@@ -1,0 +1,29 @@
+method1: {
+  workspace: "ws_name",
+  package: "package_name",
+  node: "node_name",
+  launch_file: "launch file",
+  camera_launch_cmd: "",
+  camera_topic: ""
+}
+
+method2: {
+  workspace: "ws_name",
+  package: "package_name",
+  node: "node_name",
+  launch_file: "launch file"
+}
+
+method3: {
+  workspace: "ws_name",
+  package: "package_name",
+  node: "node_name",
+  launch_file: "launch file"
+}
+
+method4: {
+  workspace: "ws_name",
+  package: "package_name",
+  node: "node_name",
+  launch_file: "launch file"
+}

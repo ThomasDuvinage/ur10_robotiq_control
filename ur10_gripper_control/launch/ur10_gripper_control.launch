@@ -1,7 +1,0 @@
-<launch>
-    <arg name="visualization" default="True"/>
-
-    <include if="$(arg visualization)" file="$(find robotiq_2f_140_gripper_visualization)/launch/robotiq_2f_140.launch"/>
-
-    <include file="$(find robotiq_2f_gripper_control)/launch/robotiq_2f_gripper_control.launch" />
-</launch>
