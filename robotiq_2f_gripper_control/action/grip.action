@@ -1,0 +1,10 @@
+#goal definition
+int16 position
+int16 speed
+int16 force
+---
+#result definition
+bool result
+---
+#feedback
+int16 current_position

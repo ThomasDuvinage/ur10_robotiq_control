@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-import robotiq_gripper
+from robotiq_2f_gripper_control.robotiq_gripper import RobotiqGripper
 import time
 
 import rospy
 from std_msgs.msg import Int16
 
-gripper = robotiq_gripper.RobotiqGripper()
+gripper = RobotiqGripper()
 
 def callback(data):
     try:
