@@ -12,7 +12,7 @@ TrajectoryController::TrajectoryController(ros::NodeHandle &nh) : nh(nh), nh_("~
     load_srv = nh_.serviceClient<controller_manager_msgs::LoadController>("/controller_manager/load_controller");
     list_srv = nh_.serviceClient<controller_manager_msgs::ListControllers>("/controller_manager/list_controllers");
 
-    joint_trajectory_controller_ = joint_trajectory_controllers[3];
+    joint_trajectory_controller_ = joint_trajectory_controllers[0];
     cartesian_trajectory_controller_ = cartesian_trajectory_controllers[0];
 
     twist_publisher = nh.advertise<geometry_msgs::Twist>("/twist_controller/command", 10);
@@ -22,10 +22,10 @@ TrajectoryController::TrajectoryController(ros::NodeHandle &nh) : nh(nh), nh_("~
     }
     
     try {
-        service = nh.advertiseService("/ur_controllerler/MoveRobot", &TrajectoryController::move, this);
-        ROS_INFO("Rosservice runnning to handle request : /ur_controllerler/MoveRobot");
+        service = nh.advertiseService("/ur_controller/MoveRobot", &TrajectoryController::move, this);
+        ROS_INFO("Rosservice runnning to handle request : /ur_controller/MoveRobot");
     } catch (ros::Exception &e) {
-        ROS_ERROR("Cannot connect to /ur_controllerler/MoveRobot : %s", e.what());
+        ROS_ERROR("Cannot connect to /ur_controller/MoveRobot : %s", e.what());
     }
 }
 
