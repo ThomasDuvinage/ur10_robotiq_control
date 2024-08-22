@@ -1,3 +1,4 @@
+#include "geometry_msgs/Twist.h"
 #include <ros/ros.h>
 #include <std_msgs/Int16.h>
 #include <geometry_msgs/Pose.h>
@@ -15,6 +16,8 @@ int main(int argc, char **argv) {
     
     // Create an instance of the srv request type
     ur_controller::MoveRobot srv;
+
+    /****** CARTESIAN CONTROL ******/
 
     geometry_msgs::Pose pose;
     pose.position.x = 0.640;
@@ -34,6 +37,31 @@ int main(int argc, char **argv) {
     std_msgs::Int16 gripper_cmd;
     gripper_cmd.data = 120;
     srv.request.gripper = {gripper_cmd};
+
+    /*******************************/
+
+    /****** JOINT CONTROL ******/
+
+    // sensor_msgs::JointState joints;
+    // joints.position = {-0.03298672, -1.52978109, -1.72229091 , 3.06846336 ,-1.65125601, -1.58929682};
+    // joints.velocity  = {0.001, 0, 0, 0, 0, 0};
+    
+    // srv.request.control_mode = "Joint";     // Cartesian or Joint or Velocity
+    // srv.request.jointStates = {joints}; // Poses to move to
+    // srv.request.time_actions = {5};     // time per action in s
+
+    /*******************************/
+
+    /****** VELOCITY CONTROL ******/
+    
+    // geometry_msgs::Twist vel;
+    // vel.linear.x = 0.1;
+    // // Fill the other cordinates
+
+    // srv.request.control_mode = "Velocity";     
+    // srv.request.cmd_vel = vel; 
+
+    /*******************************/
     
     // Call the service, and send the data
     if (client.call(srv))
