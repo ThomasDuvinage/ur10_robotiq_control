@@ -3,7 +3,7 @@
     <arg name="use_gripper" default="false" /> 
 
     <node pkg="ur_controller" type="TrajectoryControllerMain" name="TrajectoryControllerMain" output="screen">
-      <param name="controlMode" type="string" value="$(arg method)" />
+      <param name="controlMode" type="string" value="$(arg controlMode)" />
       <param name="use_gripper" type="boolean" value="$(arg use_gripper)" />
     </node>
 </launch>
