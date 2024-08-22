@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
 
     // Create a goal to send
     robotiq_2f_gripper_control::gripGoal goal;
-    goal.position = 100;  // Desired position
+    goal.position = atoi(argv[0]);  // Desired position
     goal.speed = 50;      // Speed
     goal.force = 20;      // Force
 
