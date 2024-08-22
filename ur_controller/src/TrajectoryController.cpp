@@ -150,10 +150,10 @@ bool TrajectoryController::sendJointTrajectory(const sensor_msgs::JointState &js
 
     joint_trajectory_client_.waitForResult();
 
-    actionlib::SimpleClientGoalState state = joint_trajectory_client_.getState();
-    ROS_INFO("Trajectory execution finished in state: %s", state.toString().c_str());
+    auto result = joint_trajectory_client_.getResult();
+    ROS_INFO("Trajectory execution finished in state %d", result->error_code);
 
-    if(state.isDone()){
+    if(!result->error_code){
         if(_use_gripper) sendGripperCmd(gripper_cmd);
         return true;
     }
@@ -241,11 +241,15 @@ bool TrajectoryController::move(ur_controller::MoveRobot::Request  &req, ur_cont
     }
     else if (std::strcmp("Joint", req.control_mode.c_str()) == 0) {
         for (auto &js : req.jointStates) {
-            sendJointTrajectory(js);
+            if(!sendJointTrajectory(js)){
+                res.result = false;
+                return true;
+            }
         }
     }
     else if (std::strcmp("Velocity", req.control_mode.c_str()) == 0) {
         sendTwistCommand(req.cmd_vel);
+        res.result = true;
     }
 
     return true;
