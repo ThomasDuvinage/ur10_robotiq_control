@@ -11,12 +11,13 @@ class GripperAction(object):
 
     def __init__(self, name):
         self._action_name = name
+
         self._as = actionlib.SimpleActionServer(self._action_name, robotiq_2f_gripper_control.msg.gripAction, execute_cb=self.execute_cb, auto_start=False)
         self._as.start()
 
         self.gripper = RobotiqGripper()
         try:
-            self.gripper.connect("localhost", 65500)
+            self.gripper.connect("192.168.1.3", 63352)
             self.gripper.activate(auto_calibrate=False)
         except Exception as e:
             rospy.logerr('Failed to initialize gripper: %s' % str(e))
@@ -34,7 +35,7 @@ class GripperAction(object):
         r = rospy.Rate(1)
         success = True
 
-        self.__feedback.current = self.gripper.get_current_position()
+        self.__feedback.feedback.current_position = self.gripper.get_current_position() 
         rospy.loginfo('%s: Executing, moving gripper to %i' % (self._action_name, goal.position))
 
         self.gripper.move(goal.position, goal.speed, goal.force)
@@ -47,8 +48,8 @@ class GripperAction(object):
                 # TODO stop the gripper
                 break
                 
-            self.__feedback.current_position = self.gripper.get_current_position()
-            self._as.publish_feedback(self.__feedback)
+            self.__feedback.feedback.current_position = self.gripper.get_current_position()
+            self._as.publish_feedback(self.__feedback.feedback)
             r.sleep()
 
         if success:

@@ -36,6 +36,6 @@ add_executable(gripper_action_client src/gripper_action_client.cpp)
 target_link_libraries(gripper_action_client ${catkin_LIBRARIES})
 add_dependencies(gripper_action_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-catkin_install_python(PROGRAMS src/robotiq_2f_gripper_control/robotiq_gripper.py src/robotiq_2f_gripper_control/gripper_action_client.py
+catkin_install_python(PROGRAMS src/robotiq_2f_gripper_control/robotiq_gripper.py src/robotiq_2f_gripper_control/gripper_action_client.py src/robotiq_2f_gripper_control/gripper_action_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

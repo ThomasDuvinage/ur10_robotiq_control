@@ -1,3 +1,4 @@
+#include "ros/console.h"
 #include <ros/ros.h>
 #include <actionlib/client/simple_action_client.h>
 #include <robotiq_2f_gripper_control/gripAction.h>
@@ -9,7 +10,11 @@ typedef actionlib::SimpleActionClient<robotiq_2f_gripper_control::gripAction> Gr
 int main(int argc, char** argv) {
     // Initialize the ROS node
     ros::init(argc, argv, "gripper_action_client");
-    ros::NodeHandle nh;
+    ros::NodeHandle nh("~");
+
+    int goal_position = 0;
+    nh.getParam("goal_position", goal_position);
+    ROS_INFO("Goal position : %d", goal_position);
 
     // Create an action client
     GripperClient client("gripper_action_server", true);
@@ -21,7 +26,7 @@ int main(int argc, char** argv) {
 
     // Create a goal to send
     robotiq_2f_gripper_control::gripGoal goal;
-    goal.position = atoi(argv[0]);  // Desired position
+    goal.position = goal_position;  // Desired position
     goal.speed = 50;      // Speed
     goal.force = 20;      // Force
 
