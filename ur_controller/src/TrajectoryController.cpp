@@ -1,3 +1,4 @@
+#include "ros/console.h"
 #include "ros/node_handle.h"
 #include <ur_controller/TrajectoryController.h>
 
@@ -105,6 +106,12 @@ void TrajectoryController::sendTwistCommand(const geometry_msgs::Twist &twist){
     switch_controller("twist_controller");
 
     twist_publisher.publish(twist);
+}
+
+void TrajectoryController::switchToVelocityControl(){
+    switch_controller("twist_controller");
+    ROS_INFO("Robot is listening on /twist_controller/command");
+    ROS_INFO("Publish geometry_msgs::Twist msg on this topic to control the robot");
 }
 
 /**

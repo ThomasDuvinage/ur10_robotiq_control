@@ -43,6 +43,7 @@ class TrajectoryController {
         TrajectoryController(ros::NodeHandle &nh);
 
         void sendTwistCommand(const geometry_msgs::Twist &twist);
+        void switchToVelocityControl();
         void sendGripperCmd(const std_msgs::Int16 &cmd, float wait_time);
 
         bool sendJointTrajectory(const sensor_msgs::JointState &js, float time_action, const std_msgs::Int16 &gripper_cmd = std_msgs::Int16());
