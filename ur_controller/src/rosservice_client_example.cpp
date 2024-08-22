@@ -9,14 +9,21 @@ int main(int argc, char **argv) {
     // Initialize the node and set the name
     ros::init(argc, argv, "ur_controller_client");
     
-    ros::NodeHandle n;
+    ros::NodeHandle nh;
     
-    ros::ServiceClient client = n.serviceClient<ur_controller::MoveRobot>("ur_controller/MoveRobot");
+    ros::ServiceClient client = nh.serviceClient<ur_controller::MoveRobot>("/ur_controller/MoveRobot");
     
     // Create an instance of the srv request type
     ur_controller::MoveRobot srv;
 
     geometry_msgs::Pose pose;
+    pose.position.x = 0.640;
+    pose.position.y = 0.280;
+    pose.position.z = 0.600;
+    pose.orientation.x = 0.4905349;
+    pose.orientation.y = -0.59114;
+    pose.orientation.z = 0.4857658;
+    pose.orientation.w = -0.4170858;
     
     // Fill in the two values that will be sent to the Service Server
     srv.request.control_mode = "Cartesian"; // Cartesian or Joint or Velocity
@@ -35,7 +42,7 @@ int main(int argc, char **argv) {
     }
     else
     {
-        ROS_ERROR("Failed to call service adder_server");
+        ROS_ERROR("Failed to call service");
         return 1;
     }
     
