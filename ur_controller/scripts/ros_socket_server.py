@@ -10,11 +10,12 @@ from geometry_msgs.msg import Pose
 class Action:
     def __init__(self):
         self.pose = Pose()
-        self.gripper = False
+        self.gripper = 255
+        self.control_mode = "Cartesian"
+        self.time_action = 5
 
     def toString(self):
         print(self.pose.position.x, self.pose.position.y, self.pose.position.z)
-
 
 class Server:
     def __init__(self, host, port):
@@ -54,8 +55,8 @@ class Server:
                 rospy.wait_for_service('/ur_controllerler/MoveRobot')
                 move_robot = rospy.ServiceProxy('/ur_controllerler/MoveRobot', MoveRobot)
 
-                poses = []
-                grippers = []
+                moveRobotRequest = MoveRobotRequest()
+                moveRobotRequest.control_mode = "Cartesian"
 
                 for action in actions:
                     a = Action()
@@ -74,13 +75,14 @@ class Server:
                     
                     # Parse gripper state
                     if(action['gripper']):
-                        a.gripper = True
+                        a.gripper = 120
                     
-                    poses.append(a.pose)
-                    grippers.append(a.gripper)
+                    moveRobotRequest.poses.append(a.pose)
+                    moveRobotRequest.gripper.append(a.gripper)
+                    moveRobotRequest.time_actions.append(a.time_action)
 
                 # Create a request to the service
-                response = move_robot(poses, grippers)
+                response = move_robot(moveRobotRequest)
                 
                 # Check the result and print appropriate message
                 if response.result:
