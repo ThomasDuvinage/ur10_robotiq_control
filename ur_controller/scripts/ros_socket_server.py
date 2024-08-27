@@ -4,13 +4,14 @@ import json
 import signal
 
 import rospy
+from std_msgs.msg import UInt16
 from ur_controller.srv import MoveRobot, MoveRobotRequest
 from geometry_msgs.msg import Pose
 
 class Action:
     def __init__(self):
         self.pose = Pose()
-        self.gripper = 255
+        self.gripper = UInt16(255)
         self.control_mode = "Cartesian"
         self.time_action = 5
 
@@ -52,11 +53,13 @@ class Server:
                 # Data will be [x, y] relative to camera coordinates, z and quaternion relative to robot base
                 # Need to send back "task finish" when the robot did its task and came back to its init pos : [664.36, 728.00, -242.37,  0.9998099, 0.003164, -0.016769, -0.0094337 ] x, y, z, rx, ry, rz, w
         
-                rospy.wait_for_service('/ur_controllerler/MoveRobot')
-                move_robot = rospy.ServiceProxy('/ur_controllerler/MoveRobot', MoveRobot)
+                rospy.wait_for_service('/ur_controller/MoveRobot')
+                move_robot = rospy.ServiceProxy('/ur_controller/MoveRobot', MoveRobot)
 
                 moveRobotRequest = MoveRobotRequest()
                 moveRobotRequest.control_mode = "Cartesian"
+                
+                print(actions)
 
                 for action in actions:
                     a = Action()
@@ -75,7 +78,7 @@ class Server:
                     
                     # Parse gripper state
                     if(action['gripper']):
-                        a.gripper = 120
+                        a.gripper = UInt16(120)
                     
                     moveRobotRequest.poses.append(a.pose)
                     moveRobotRequest.gripper.append(a.gripper)
