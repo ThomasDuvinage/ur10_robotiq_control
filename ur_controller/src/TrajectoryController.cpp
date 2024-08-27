@@ -227,7 +227,7 @@ bool TrajectoryController::move(ur_controller::MoveRobot::Request  &req, ur_cont
         }
         else if(!_use_gripper){
             for (int i = 0; i < req.poses.size();i++) {
-                if(!sendCartesianTrajectory(req.poses[i])){ 
+                if(!sendCartesianTrajectory(req.poses[i], req.time_actions[i])){ 
                     res.result = false;
                     return true;
                 }
@@ -240,11 +240,26 @@ bool TrajectoryController::move(ur_controller::MoveRobot::Request  &req, ur_cont
         }
     }
     else if (std::strcmp("Joint", req.control_mode.c_str()) == 0) {
-        for (auto &js : req.jointStates) {
-            if(!sendJointTrajectory(js)){
-                res.result = false;
-                return true;
+        if(_use_gripper && req.jointStates.size() == req.gripper.size()){
+            for (int i = 0; i < req.jointStates.size(); i++) {
+                if(!sendJointTrajectory(req.jointStates[i], req.time_actions[i])){
+                    res.result = false;
+                    return true;
+                }
             }
+        }
+        else if(!_use_gripper){
+            for (int i = 0; i < req.jointStates.size();i++) {
+                if(!sendJointTrajectory(req.jointStates[i], req.time_actions[i])){ 
+                    res.result = false;
+                    return true;
+                }
+            }
+            res.result = true;
+        }
+        else {
+            ROS_ERROR("Cannot execute move command, please check the size of poses and gripper commands");
+            res.result = false;
         }
     }
     else if (std::strcmp("Velocity", req.control_mode.c_str()) == 0) {
