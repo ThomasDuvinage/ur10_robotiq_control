@@ -59,7 +59,7 @@ int main(int argc, char **argv) {
     // // Fill the other cordinates
 
     // srv.request.control_mode = "Velocity";     
-    // srv.request.cmd_vel = vel; 
+    srv.request.cmd_vel = geometry_msgs::Twist(); 
 
     /*******************************/
     
