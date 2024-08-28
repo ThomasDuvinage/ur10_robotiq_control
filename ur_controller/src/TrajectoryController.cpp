@@ -19,7 +19,7 @@ TrajectoryController::TrajectoryController(ros::NodeHandle &nh) : nh(nh), nh_("~
     twist_publisher = nh.advertise<geometry_msgs::Twist>("/twist_controller/command", 10);
 
     if(_use_gripper){
-        gripper_pub = nh.advertise<std_msgs::Int16>("/ur_control/gripperCmd", 10);
+        gripper_pub = nh.advertise<std_msgs::Int16>("/ur_controller/gripperCmd", 10);
     }
     
     try {

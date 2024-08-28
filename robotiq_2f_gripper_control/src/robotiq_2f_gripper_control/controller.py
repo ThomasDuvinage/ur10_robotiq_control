@@ -37,7 +37,7 @@ if __name__ == '__main__':
         rospy.logerr(f"Failed to activate gripper: {e}")
         rospy.signal_shutdown("Activation error")
 
-    rospy.Subscriber("/gripperCmd", Int16, callback)
+    rospy.Subscriber("/ur_controller/gripperCmd", Int16, callback)
 
     pub = rospy.Publisher('/gripperCurrentPose', Int16, queue_size=10)
 

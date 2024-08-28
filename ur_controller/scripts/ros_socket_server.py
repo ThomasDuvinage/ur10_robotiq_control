@@ -42,7 +42,7 @@ class Server:
             Thread(target=self.handle_client, args=(client, addr)).start()
 
     def handle_client(self, client_socket, address):
-        size = 1024
+        size = 4096
         while not self.stop_event.is_set():
             try:
                 data = client_socket.recv(size)
@@ -70,15 +70,13 @@ class Server:
                     a.pose.position.y = pos_end_effector[1]
                     a.pose.position.z = pos_end_effector[2]
                     
-                    # Assuming orientation is not provided, set default
                     a.pose.orientation.x = pos_end_effector[3]
                     a.pose.orientation.y = pos_end_effector[4]
                     a.pose.orientation.z = pos_end_effector[5]
                     a.pose.orientation.w = pos_end_effector[6]
                     
-                    # Parse gripper state
-                    if(action['gripper']):
-                        a.gripper = UInt16(120)
+                    # Parse gripper
+                    a.gripper = UInt16(action['gripper'])
                     
                     moveRobotRequest.poses.append(a.pose)
                     moveRobotRequest.gripper.append(a.gripper)
