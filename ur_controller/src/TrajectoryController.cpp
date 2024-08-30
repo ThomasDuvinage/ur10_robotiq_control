@@ -1,13 +1,11 @@
-#include "ros/console.h"
-#include "ros/node_handle.h"
 #include <ur_controller/TrajectoryController.h>
 
-
-TrajectoryController::TrajectoryController(ros::NodeHandle &nh) : nh(nh), nh_("~"),joint_trajectory_client_("/scaled_pos_joint_traj_controller/follow_joint_trajectory", true), cartesian_trajectory_client_("/pose_based_cartesian_traj_controller/follow_cartesian_trajectory", true) {
+TrajectoryController::TrajectoryController(ros::NodeHandle &nh) : nh(nh), nh_("~"), tfListener(tfBuffer), joint_trajectory_client_("/scaled_pos_joint_traj_controller/follow_joint_trajectory", true), cartesian_trajectory_client_("/pose_based_cartesian_traj_controller/follow_cartesian_trajectory", true) {
             
     // Get parameters given by the user
     nh_.param<std::string>("controlMode", _control_mode, "Joint"); // Joint, Velocity, Cartesian
     nh_.param<bool>("use_gripper",_use_gripper, false);
+    nh_.param<bool>("relative", relative, false);
 
     switch_srv = nh_.serviceClient<controller_manager_msgs::SwitchController>("/controller_manager/switch_controller");
     load_srv = nh_.serviceClient<controller_manager_msgs::LoadController>("/controller_manager/load_controller");
@@ -170,7 +168,7 @@ bool TrajectoryController::sendJointTrajectory(const sensor_msgs::JointState &js
  * @return true OnSuccess
  * @return false OnFail
  */
-bool TrajectoryController::sendCartesianTrajectory(const geometry_msgs::Pose &pose, float time_action = 5.0, const std_msgs::Int16 &gripper_cmd) {
+bool TrajectoryController::sendCartesianTrajectory(const geometry_msgs::Pose &pose, float time_action = 5.0, bool relative_move = false, const std_msgs::Int16 &gripper_cmd = std_msgs::Int16()) {
     switch_controller(cartesian_trajectory_controller_);
 
     if (!cartesian_trajectory_client_.waitForServer(ros::Duration(5.0))) {
@@ -183,8 +181,25 @@ bool TrajectoryController::sendCartesianTrajectory(const geometry_msgs::Pose &po
 
     cartesian_control_msgs::FollowCartesianTrajectoryGoal goal;
 
+
     cartesian_control_msgs::CartesianTrajectoryPoint point;
-    point.pose = pose;
+    if(relative_move){
+        transformStamped = tfBuffer.lookupTransform("base", "tool0_controller",  ros::Time(0));
+
+        tf2::Transform tf2_pose;
+        tf2::fromMsg(pose, tf2_pose);
+
+        tf2::Transform tf2_transform_stamped;
+        tf2::convert(transformStamped.transform, tf2_transform_stamped);
+
+        tf2::Transform tf2_result = tf2_pose * tf2_transform_stamped;
+
+        geometry_msgs::Pose result_pose;
+        tf2::toMsg(tf2_result, result_pose);
+        point.pose = result_pose;
+    }
+    else
+        point.pose = pose;
     point.time_from_start = ros::Duration(time_action);
     goal.trajectory.points.push_back(point);
     
@@ -218,7 +233,7 @@ bool TrajectoryController::move(ur_controller::MoveRobot::Request  &req, ur_cont
     if(std::strcmp("Cartesian", req.control_mode.c_str()) == 0){
         if(_use_gripper && req.poses.size() == req.gripper.size()){
             for (int i = 0; i < req.poses.size();i++) { 
-                if(!sendCartesianTrajectory(req.poses[i], req.time_actions[i], req.gripper[i])){ 
+                if(!sendCartesianTrajectory(req.poses[i], req.time_actions[i],relative, req.gripper[i])){ 
                     res.result = false;
                     return true;
                 }
@@ -227,7 +242,7 @@ bool TrajectoryController::move(ur_controller::MoveRobot::Request  &req, ur_cont
         }
         else if(!_use_gripper){
             for (int i = 0; i < req.poses.size();i++) {
-                if(!sendCartesianTrajectory(req.poses[i], req.time_actions[i])){ 
+                if(!sendCartesianTrajectory(req.poses[i], req.time_actions[i], relative)){ 
                     res.result = false;
                     return true;
                 }
@@ -269,4 +284,3 @@ bool TrajectoryController::move(ur_controller::MoveRobot::Request  &req, ur_cont
 
     return true;
 }
-

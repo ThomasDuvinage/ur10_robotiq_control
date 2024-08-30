@@ -22,6 +22,12 @@
 #include <sensor_msgs/JointState.h>
 #include <geometry_msgs/Twist.h>
 
+#include <tf2/transform_datatypes.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf2_ros/buffer.h>
+#include <tf2_ros/transform_listener.h>
+
 #include <trajectory_msgs/JointTrajectory.h>
 #include <trajectory_msgs/JointTrajectoryPoint.h>
 
@@ -48,7 +54,7 @@ class TrajectoryController {
 
         bool sendJointTrajectory(const sensor_msgs::JointState &js, float time_action, const std_msgs::Int16 &gripper_cmd = std_msgs::Int16());
 
-        bool sendCartesianTrajectory(const geometry_msgs::Pose &pose, float time_action, const std_msgs::Int16 &gripper_cmd = std_msgs::Int16());
+        bool sendCartesianTrajectory(const geometry_msgs::Pose &pose, float time_action, bool relative_move, const std_msgs::Int16 &gripper_cmd);
 
     public:
         geometry_msgs::Pose init_pose;
@@ -56,6 +62,7 @@ class TrajectoryController {
     private:
         ros::NodeHandle nh_, nh;
         std::string _control_mode;
+        bool relative;
 
         TrajectoryClient joint_trajectory_client_;
         CartesianTrajectoryClient cartesian_trajectory_client_;
@@ -66,6 +73,10 @@ class TrajectoryController {
         ros::ServiceClient switch_srv;
 
         ros::ServiceServer service;
+
+        tf2_ros::Buffer tfBuffer;
+        tf2_ros::TransformListener tfListener;
+        geometry_msgs::TransformStamped transformStamped;
 
         bool _use_gripper;
         ros::Publisher gripper_pub;

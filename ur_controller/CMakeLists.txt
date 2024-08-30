@@ -13,6 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   control_msgs
   actionlib
   message_generation
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
 )
 
 add_service_files(
@@ -30,7 +33,7 @@ generate_messages(
 )
 
 catkin_package(
-    CATKIN_DEPENDS roscpp rospy sensor_msgs geometry_msgs control_msgs actionlib 
+    CATKIN_DEPENDS roscpp rospy sensor_msgs geometry_msgs control_msgs actionlib tf2 tf2_ros
 )
 
 add_subdirectory(lib)

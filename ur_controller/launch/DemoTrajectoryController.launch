@@ -1,9 +1,10 @@
 <launch>   
     <arg name="controlMode" default="Joint" />
-    <arg name="use_gripper" default="false" />
+    <arg name="relative" default="false" />
 
     <node pkg="ur_controller" type="DemoTrajectoryController" name="DemoTrajectoryController" output="screen">
       <param name="controlMode" type="string" value="$(arg controlMode)" />
       <param name="use_gripper" type="boolean" value="$(arg use_gripper)" />
+      <param name="relative" type="boolean" value="$(arg relative)" />
     </node>
 </launch>
