@@ -192,7 +192,7 @@ bool TrajectoryController::sendCartesianTrajectory(const geometry_msgs::Pose &po
         tf2::Transform tf2_transform_stamped;
         tf2::convert(transformStamped.transform, tf2_transform_stamped);
 
-        tf2::Transform tf2_result = tf2_pose * tf2_transform_stamped;
+        tf2::Transform tf2_result = tf2_transform_stamped * tf2_pose;
 
         geometry_msgs::Pose result_pose;
         tf2::toMsg(tf2_result, result_pose);
